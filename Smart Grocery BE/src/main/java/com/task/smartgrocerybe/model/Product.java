@@ -1,22 +1,21 @@
 package com.task.smartgrocerybe.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @SQLRestriction("is_deleted = false")
-public class Products extends BaseEntity{
+public class Product extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

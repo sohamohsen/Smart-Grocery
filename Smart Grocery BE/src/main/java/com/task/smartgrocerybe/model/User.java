@@ -11,11 +11,12 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Users extends BaseEntity implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
