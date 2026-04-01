@@ -1,9 +1,6 @@
 package com.task.smartgrocerybe.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +10,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Table(uniqueConstraints = @UniqueConstraint(
+        columnNames = {"user_id", "product_id"}
+))
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
