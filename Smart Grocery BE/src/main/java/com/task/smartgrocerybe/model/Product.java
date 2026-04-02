@@ -34,9 +34,9 @@ public class Product extends BaseEntity{
     @Column(unique = true)
     private String barcode;
 
-    private boolean isApproved = false;
+    private Boolean isApproved = false;
 
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     private LocalDateTime deletedAt;
 

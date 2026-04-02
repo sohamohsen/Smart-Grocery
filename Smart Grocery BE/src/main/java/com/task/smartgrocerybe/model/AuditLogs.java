@@ -21,7 +21,7 @@ public class AuditLogs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer performedBy;
+    private String performedBy;
 
     @Enumerated(EnumType.STRING)
     private Role userRole;
