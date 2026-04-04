@@ -1,5 +1,6 @@
 package com.task.smartgrocerybe.model;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
@@ -14,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SQLRestriction("is_deleted = false")
-public class Product extends BaseEntity{
+@SQLRestriction("is_deleted = 0")
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

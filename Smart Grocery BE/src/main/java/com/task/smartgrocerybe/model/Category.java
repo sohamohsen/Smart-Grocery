@@ -3,6 +3,8 @@ package com.task.smartgrocerybe.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "categories")
@@ -19,5 +21,11 @@ public class Category extends BaseEntity {
     private String name;
 
     private String description;
+
+    private Boolean isDeleted = false;
+
+    private LocalDateTime deletedAt;
+
+    private Integer deletedBy;
 
 }
