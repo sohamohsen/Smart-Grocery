@@ -309,7 +309,7 @@ public class ProductService {
                 .build();
     }
 
-    private ProductResponse mapToResponse(Product product) {
+    public ProductResponse mapToResponse(Product product) {
         List<String> tags = productTagRepository
                 .findByProductId(product.getId())
                 .stream()
