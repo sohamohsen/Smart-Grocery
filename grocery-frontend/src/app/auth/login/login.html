@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="login-card">
+
+    <div class="logo">
+      <span class="logo-icon">🛒</span>
+      <span class="logo-text">Smart Grocery</span>
+    </div>
+
+    <h2 class="title">Welcome back</h2>
+    <p class="subtitle">Sign in to your account</p>
+
+    <div class="error-box" *ngIf="errorMessage">
+      <span>⚠</span> {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="login()" #loginForm="ngForm">
+
+      <div class="field">
+        <div class="field-wrap" [class.has-error]="usernameRef.invalid && usernameRef.touched">
+          <span class="field-icon">👤</span>
+          <input
+            type="text"
+            placeholder="Username"
+            [(ngModel)]="form.username"
+            name="username"
+            required
+            #usernameRef="ngModel"
+            autocomplete="username"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-wrap" [class.has-error]="passwordRef.invalid && passwordRef.touched">
+          <span class="field-icon">🔒</span>
+          <input
+            [type]="hidePassword ? 'password' : 'text'"
+            placeholder="Password"
+            [(ngModel)]="form.password"
+            name="password"
+            required
+            #passwordRef="ngModel"
+            autocomplete="current-password"
+          />
+          <button type="button" class="toggle-btn" (click)="hidePassword = !hidePassword">
+            {{ hidePassword ? '👁' : '🙈' }}
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="login-btn"
+        [class.loading]="loading"
+        [disabled]="loading || !form.username || !form.password"
+      >
+        <span class="spinner" *ngIf="loading"></span>
+        <span *ngIf="!loading">Sign In</span>
+      </button>
+
+    </form>
+
+    <div class="divider"><span>New to Smart Grocery?</span></div>
+
+    <div class="signup-btns">
+      <a routerLink="/register/user" class="signup-btn user-btn">
+        👤 Sign up
+      </a>
+    </div>
+
+  </div>
+</div>
