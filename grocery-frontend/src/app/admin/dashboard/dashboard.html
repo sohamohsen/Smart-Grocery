@@ -1,1 +1,44 @@
-<p>dashboard works!</p>
+<div class="shell" [class.collapsed]="!sidebarOpen">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text" *ngIf="sidebarOpen">Smart Grocery</span>
+      </div>
+      <button class="collapse-btn" (click)="toggleSidebar()">
+        {{ sidebarOpen ? '◀' : '▶' }}
+      </button>
+    </div>
+
+    <nav class="nav">
+      <a *ngFor="let item of navItems"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         class="nav-item"
+         [title]="item.label">
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-label" *ngIf="sidebarOpen">{{ item.label }}</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="sidebarOpen">
+        <div class="user-avatar">{{ username[0]?.toUpperCase() }}</div>
+        <div class="user-meta">
+          <span class="user-name">{{ username }}</span>
+          <span class="user-role">Administrator</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <span>🚪</span>
+        <span *ngIf="sidebarOpen">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

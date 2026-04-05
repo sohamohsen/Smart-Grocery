@@ -1,1 +1,78 @@
 <p>wishlist works!</p>
+<div class="toast" *ngIf="toast" [class.toast-err]="toastErr">{{ toast }}</div>
+
+<!-- Header -->
+<div class="page-header">
+  <div>
+    <h1 class="page-title">❤️ My Wishlist</h1>
+    <p class="page-sub" *ngIf="!loading">{{ totalElements }} saved item{{ totalElements !== 1 ? 's' : '' }}</p>
+  </div>
+  <a routerLink="/products" class="shop-link">← Continue Shopping</a>
+</div>
+
+<!-- Loading skeleton -->
+<div class="wish-grid" *ngIf="loading">
+  <div class="skel-card" *ngFor="let i of [1,2,3,4,5,6]">
+    <div class="skel-img"></div>
+    <div class="skel-body">
+      <div class="skel-line w50"></div>
+      <div class="skel-line w80"></div>
+      <div class="skel-line w40"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Wishlist grid -->
+<div class="wish-grid" *ngIf="!loading && items.length > 0">
+  <div class="wish-card" *ngFor="let item of items"
+       [class.removing]="removing[item.productId]">
+
+    <!-- Product image -->
+    <a [routerLink]="['/products', item.productId]" class="wish-img-link">
+      <img *ngIf="item.productImageUrl" [src]="item.productImageUrl" [alt]="item.productName" class="wish-img" />
+      <div *ngIf="!item.productImageUrl" class="wish-img-placeholder">🛒</div>
+    </a>
+
+    <!-- Body -->
+    <div class="wish-body">
+      <span class="wish-category">{{ item.categoryName }}</span>
+      <a [routerLink]="['/products', item.productId]" class="wish-name">{{ item.productName }}</a>
+      <p class="wish-brand" *ngIf="item.productBrand">{{ item.productBrand }}</p>
+
+      <!-- Tags -->
+      <div class="wish-tags" *ngIf="item.tags?.length">
+        <span class="tag" *ngFor="let t of item.tags?.slice(0, 3)">{{ t }}</span>
+      </div>
+
+      <div class="wish-footer">
+        <span class="wish-price">EGP {{ item.productPrice | number:'1.2-2' }}</span>
+        <div class="wish-actions">
+          <span class="wish-date">Added {{ item.addedAt | date:'MMM d' }}</span>
+          <button
+            class="remove-btn"
+            (click)="remove(item)"
+            [disabled]="removing[item.productId]"
+            title="Remove from wishlist"
+          >
+            {{ removing[item.productId] ? '…' : '🗑️' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Empty state -->
+<div class="empty-state" *ngIf="!loading && items.length === 0">
+  <div class="empty-anim">🤍</div>
+  <h2 class="empty-title">Your wishlist is empty</h2>
+  <p class="empty-sub">Browse the shop and tap 🤍 to save items here.</p>
+  <a routerLink="/products" class="browse-btn">🛒 Browse Products</a>
+</div>
+
+<!-- Pagination -->
+<div class="pagination" *ngIf="totalPages > 1 && !loading">
+  <button class="page-btn" (click)="prevPage()" [disabled]="page === 0">‹ Prev</button>
+  <span class="page-info">{{ page + 1 }} / {{ totalPages }}</span>
+  <button class="page-btn" (click)="nextPage()" [disabled]="page >= totalPages - 1">Next ›</button>
+</div>

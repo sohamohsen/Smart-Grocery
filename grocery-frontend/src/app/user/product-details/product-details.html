@@ -1,0 +1,76 @@
+<div class="toast" *ngIf="toast" [class.toast-err]="toastErr">{{ toast }}</div>
+
+<!-- Back link -->
+<a routerLink="/products" class="back-link">← Back to Shop</a>
+
+<!-- Loading -->
+<div class="skeleton-detail" *ngIf="loading">
+  <div class="skel-img"></div>
+  <div class="skel-content">
+    <div class="skel-line w30"></div>
+    <div class="skel-line w70"></div>
+    <div class="skel-line w50"></div>
+    <div class="skel-line w90"></div>
+    <div class="skel-line w60"></div>
+  </div>
+</div>
+
+<!-- Detail card -->
+<div class="detail-card" *ngIf="product && !loading">
+  <!-- Image panel -->
+  <div class="detail-img-panel">
+    <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" class="detail-img" />
+    <div *ngIf="!product.imageUrl" class="detail-img-placeholder">🛒</div>
+
+    <div class="img-badge" *ngIf="product.isApproved">✅ Verified</div>
+  </div>
+
+  <!-- Info panel -->
+  <div class="detail-info">
+    <span class="detail-category">{{ product.categoryName }}</span>
+    <h1 class="detail-name">{{ product.name }}</h1>
+    <p class="detail-brand" *ngIf="product.brand">by {{ product.brand }}</p>
+
+    <div class="detail-price">
+      <span class="price-label">Price</span>
+      <span class="price-value">EGP {{ product.price | number:'1.2-2' }}</span>
+    </div>
+
+    <p class="detail-desc" *ngIf="product.description">{{ product.description }}</p>
+
+    <!-- Tags -->
+    <div class="detail-tags" *ngIf="product.tags?.length">
+      <span class="tag" *ngFor="let t of product.tags">{{ t }}</span>
+    </div>
+
+    <!-- Meta -->
+    <div class="detail-meta">
+      <div class="meta-item" *ngIf="product.barcode">
+        <span class="meta-label">Barcode</span>
+        <span class="meta-value mono">{{ product.barcode }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Category ID</span>
+        <span class="meta-value">#{{ product.categoryId }}</span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <button
+      class="wish-cta"
+      [class.wished]="inWishlist"
+      [disabled]="toggling"
+      (click)="toggleWishlist()"
+    >
+      <span>{{ inWishlist ? '❤️' : '🤍' }}</span>
+      <span>{{ inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}</span>
+    </button>
+  </div>
+</div>
+
+<!-- Not found -->
+<div class="not-found" *ngIf="!product && !loading">
+  <div class="nf-icon">😕</div>
+  <p class="nf-title">Product not found</p>
+  <a routerLink="/products" class="nf-back">← Back to Shop</a>
+</div>

@@ -26,6 +26,6 @@ public class Favorite {
 
     private Integer productId;
 
-    private LocalDateTime addAt;
+    private LocalDateTime addedAt;
 
 }

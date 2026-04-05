@@ -11,8 +11,8 @@ export class Auth {
   private baseUrl = 'http://localhost:8080/api/auth';
   private isBrowser: boolean;
 
-  // Don't call loadUser() here — browser isn't guaranteed yet
-  private currentUser$ = new BehaviorSubject<AuthResponse | null>(null);
+  private currentUserSubject = new BehaviorSubject<AuthResponse | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -20,29 +20,53 @@ export class Auth {
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
-    this.currentUser$.next(this.loadUser()); // safe now — isBrowser is set
+
+    // 🔥 restore user ON APP START
+    const user = this.loadUserFromStorage();
+    if (user) {
+      this.currentUserSubject.next(user);
+    }
   }
+
+  // ───────── AUTH APIs ─────────
 
   login(data: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, data).pipe(
-      tap(res => this.saveUser(res))
+      tap(res => this.handleAuthSuccess(res))
     );
   }
 
   register(data: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/register`, data).pipe(
-      tap(res => this.saveUser(res))
+      tap(res => this.handleAuthSuccess(res))
     );
   }
 
-  saveUser(res: AuthResponse): void {
+  // ───────── STATE MANAGEMENT ─────────
+
+  private handleAuthSuccess(res: AuthResponse): void {
     if (this.isBrowser) {
       localStorage.setItem('token', res.token);
       localStorage.setItem('role', res.role);
       localStorage.setItem('user', JSON.stringify(res));
     }
-    this.currentUser$.next(res);
+    this.currentUserSubject.next(res);
   }
+
+  private loadUserFromStorage(): AuthResponse | null {
+    if (!this.isBrowser) return null;
+
+    const stored = localStorage.getItem('user');
+    if (!stored) return null;
+
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return null;
+    }
+  }
+
+  // ───────── GETTERS ─────────
 
   getToken(): string | null {
     return this.isBrowser ? localStorage.getItem('token') : null;
@@ -53,26 +77,27 @@ export class Auth {
   }
 
   getCurrentUser(): AuthResponse | null {
-    return this.currentUser$.value;
+    return this.currentUserSubject.value;
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!this.getToken(); // 🔥 أهم تعديل
   }
 
   isAdmin(): boolean {
     return this.getRole() === 'ROLE_ADMIN';
   }
 
-  logout(): void {
-    if (this.isBrowser) localStorage.clear();
-    this.currentUser$.next(null);
-    this.router.navigate(['/login']);
-  }
+  // ───────── LOGOUT ─────────
 
-  private loadUser(): AuthResponse | null {
-    if (!this.isBrowser) return null;  // SSR guard — no localStorage on server
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
+  logout(): void {
+    if (this.isBrowser) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+      localStorage.removeItem('user');
+    }
+
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/login']);
   }
 }

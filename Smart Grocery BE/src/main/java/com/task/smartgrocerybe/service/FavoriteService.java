@@ -9,6 +9,7 @@ import com.task.smartgrocerybe.model.enums.Action;
 import com.task.smartgrocerybe.model.enums.EntityType;
 import com.task.smartgrocerybe.repository.FavoriteRepository;
 import com.task.smartgrocerybe.repository.ProductRepository;
+import com.task.smartgrocerybe.repository.UserRepository;
 import com.task.smartgrocerybe.service.AuditLogService;
 import com.task.smartgrocerybe.service.ProductService;
 import com.task.smartgrocerybe.util.ApiResponse;
@@ -36,6 +37,7 @@ public class FavoriteService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final AuditLogService auditLogService;
+    private final UserRepository userRepository;
 
     // ─── toggle — add if not exists, remove if exists ────────────────────
     @Transactional
@@ -65,7 +67,7 @@ public class FavoriteService {
             Favorite favorite = Favorite.builder()
                     .userId(userId)
                     .productId(productId)
-                    .addAt(LocalDateTime.now())
+                    .addedAt(LocalDateTime.now())
                     .build();
 
             favoriteRepository.save(favorite);
@@ -139,17 +141,17 @@ public class FavoriteService {
                 .productImageUrl(product.getImageUrl())
                 .categoryName(productResponse.getCategoryName())
                 .tags(productResponse.getTags())
-                .addedAt(favorite.getAddAt())
+                .addedAt(favorite.getAddedAt())
                 .build();
     }
 
     private Integer getCurrentUserId() {
-        // get username from SecurityContext
         String username = SecurityContextHolder.getContext()
-                .getAuthentication().getName();
+                .getAuthentication()
+                .getName();
 
-        // you need UserRepository here to get the ID
-        // inject it or get it from a UserService
-        throw new RuntimeException("implement getCurrentUserId");
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getId();
     }
 }

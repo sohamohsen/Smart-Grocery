@@ -23,19 +23,25 @@ export class Login {
 
   login() {
     if (!this.form.username || !this.form.password) return;
-    this.loading      = true;
+
+    this.loading = true;
     this.errorMessage = '';
 
     this.authService.login(this.form).subscribe({
       next: (res: AuthResponse) => {
-        if (res.role === 'ROLE_ADMIN') {
-          this.router.navigate(['/admin']);
+
+        console.log('LOGIN RESPONSE:', res); // 👈 debug
+
+        this.loading = false;
+
+        if (res.role === 'ADMIN' || res.role === 'ROLE_ADMIN') {
+          this.router.navigate(['/admin/products']);
         } else {
           this.router.navigate(['/products']);
         }
       },
       error: () => {
-        this.loading      = false;
+        this.loading = false;
         this.errorMessage = 'Wrong username or password. Please try again.';
       }
     });
