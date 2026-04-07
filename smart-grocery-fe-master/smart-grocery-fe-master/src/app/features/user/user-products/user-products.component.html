@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
     <div>
       <h1 class="text-3xl font-bold text-gray-900">Browse Products</h1>
-      <p class="mt-2 text-sm text-gray-600">Discover products, filter by category, and save favorites to your wishlist.</p>
+      <p class="mt-2 text-sm text-gray-600">Discover products, filter by category, and mark items as Want to Buy.</p>
     </div>
 
     <div
@@ -105,7 +105,7 @@
         >
           <div class="relative flex h-56 items-center justify-center overflow-hidden bg-gray-50 p-5">
             <img
-              [src]="product.imageUrl || 'assets/placeholder.png'"
+              [src]="product.imageUrl || 'assets/placeholder.svg'"
               [alt]="product.name"
               class="h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
             >
@@ -114,7 +114,7 @@
               type="button"
               (click)="toggleWishlist(product.id)"
               class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/70 bg-white/90 text-red-500 shadow-sm transition-transform hover:scale-105"
-              [attr.aria-label]="isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'"
+              [attr.aria-label]="isInWishlist(product.id) ? 'Remove from Want to Buy list' : 'Add to Want to Buy list'"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +172,7 @@
                   ? 'bg-red-50 text-red-600 hover:bg-red-100'
                   : 'bg-primary-50 text-primary-700 hover:bg-primary-100'"
               >
-                {{ isInWishlist(product.id) ? 'Remove Favorite' : 'Add Favorite' }}
+                {{ isInWishlist(product.id) ? 'Remove Want to Buy' : 'Mark Want to Buy' }}
               </button>
             </div>
           </div>

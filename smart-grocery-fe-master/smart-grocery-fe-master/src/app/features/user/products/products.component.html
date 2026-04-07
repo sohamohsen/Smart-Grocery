@@ -19,8 +19,8 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
   <div *ngFor="let p of productsPage?.content" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group relative">
     <div class="relative h-48 bg-gray-50 overflow-hidden p-4 flex justify-center items-center">
-      <img [src]="p.imageUrl || 'assets/placeholder.png'" class="h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110" alt="Product Image">
-      <button (click)="toggleFavorite(p.id)" class="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md text-gray-400 hover:text-red-500 focus:outline-none transition-colors group/btn">
+      <img [src]="p.imageUrl || 'assets/placeholder.svg'" class="h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110" [alt]="p.name">
+      <button (click)="toggleFavorite(p.id)" [attr.aria-label]="isFavorite(p.id) ? 'Remove from Want to Buy list' : 'Add to Want to Buy list'" class="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md text-gray-400 hover:text-red-500 focus:outline-none transition-colors group/btn">
         <svg xmlns="http://www.w3.org/2000/svg" [class.text-red-500]="isFavorite(p.id)" [class.fill-current]="isFavorite(p.id)" class="h-5 w-5 transform transition-transform group-hover/btn:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
         </svg>

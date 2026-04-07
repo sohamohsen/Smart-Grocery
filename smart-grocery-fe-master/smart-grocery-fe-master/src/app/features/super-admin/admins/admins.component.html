@@ -229,17 +229,17 @@
               isSelectedAdmin
                 ? selectedAccount?.name + ' Actions'
                 : isSelectedUser
-                  ? selectedAccount?.name + '\'s Wishlist'
+                  ? selectedAccount?.name + '\'s Want to Buy List'
                   : isAdminTab
                     ? 'Admin Actions'
-                    : 'User Wishlist'
+                    : 'User Want to Buy List'
             }}
           </h2>
           <p class="mt-1 text-sm text-gray-600">
             {{
               isAdminTab
                 ? 'Click an admin row to see the actions they performed.'
-                : 'Click a user row to see the products they saved in their wishlist.'
+                : 'Click a user row to see the products they marked as Want to Buy.'
             }}
           </p>
         </div>
@@ -262,7 +262,7 @@
             {{
               isAdminTab
                 ? 'Select an admin from the list to inspect their recent actions.'
-                : 'Select a user from the list to inspect their wishlist.'
+                : 'Select a user from the list to inspect their Want to Buy list.'
             }}
           </p>
         </div>
@@ -313,8 +313,7 @@
           <div *ngFor="let item of wishlistPage?.content" class="px-6 py-5">
             <div class="flex items-start gap-4">
               <img
-                *ngIf="item.productImageUrl"
-                [src]="item.productImageUrl"
+                [src]="item.productImageUrl || 'assets/placeholder.svg'"
                 [alt]="item.productName"
                 class="h-16 w-16 rounded-xl border border-gray-200 object-cover"
               >
@@ -339,9 +338,9 @@
         </div>
 
         <div *ngIf="isSelectedUser && !detailLoading && !detailError && wishlistPage && !wishlistPage.content.length" class="px-6 py-10 text-center">
-          <p class="text-base font-semibold text-gray-900">Wishlist is empty</p>
+          <p class="text-base font-semibold text-gray-900">Want to Buy list is empty</p>
           <p class="mt-2 text-sm text-gray-600">
-            This user has not added any products to their wishlist yet.
+            This user has not marked any products as Want to Buy yet.
           </p>
         </div>
       </section>

@@ -24,12 +24,10 @@ public class UserProductController {
             @RequestParam(required = false) Integer categoryId,
             @RequestParam(required = false) String barcode,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir) {
+            @RequestParam(defaultValue = "10") int size) {
 
         var result = productService.getApprovedProducts(
-                page, size, sortBy, sortDir,
+                page, size,
                 search, categoryId, barcode);
 
         return ResponseEntity.ok(

@@ -227,10 +227,10 @@ public class ProductService {
     // user sees ONLY approved + not deleted — @SQLRestriction handles deleted
     @Transactional(readOnly = true)
     public PageResponse<ProductResponse> getApprovedProducts(
-            int page, int size, String sortBy, String sortDir,
+            int page, int size,
             String search, Integer categoryId, String barcode) {
 
-        Pageable pageable = buildPageable(page, size, sortBy, sortDir);
+        Pageable pageable = PageRequest.of(page, size);
 
         Page<Product> products;
 
