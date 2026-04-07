@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/admin/products")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
 public class AdminProductController {
 
     private final ProductService productService;
@@ -73,15 +73,6 @@ public class AdminProductController {
                 ApiResponse.success("Product deleted successfully", null));
     }
 
-    @PatchMapping("/restore/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> restoreProduct(
-            @PathVariable Integer id) {
-
-        var result = productService.restoreProduct(id);
-        return ResponseEntity.ok(
-                ApiResponse.success("Product restored successfully", result));
-    }
-
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getProducts(
             @RequestParam(required = false) String search,
@@ -103,12 +94,4 @@ public class AdminProductController {
                 ApiResponse.success("Products fetched successfully", result));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProduct(
-            @PathVariable Integer id) {
-
-        var result = productService.getProductById(id);
-        return ResponseEntity.ok(
-                ApiResponse.success("Product fetched successfully", result));
-    }
 }

@@ -24,7 +24,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         try {
 
             ApiResponse<?> apiResponse =
-                    ApiResponse.error("Unauthorized - Please login first");
+                    ApiResponse.unauthorized("Unauthorized - Please login first");
 
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");

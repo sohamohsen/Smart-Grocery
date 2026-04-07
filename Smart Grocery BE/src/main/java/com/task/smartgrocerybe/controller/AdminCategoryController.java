@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/categories")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
 public class AdminCategoryController {
 
     private final CategoryService categoryService;
@@ -40,34 +40,4 @@ public class AdminCategoryController {
                 ApiResponse.success("Category updated successfully", result));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCategory(
-            @PathVariable Integer id) {
-
-        categoryService.deleteCategory(id);
-        return ResponseEntity.ok(
-                ApiResponse.success("Category deleted successfully", null));
-    }
-
-    @PatchMapping("/restore/{id}")
-    public ResponseEntity<ApiResponse<CategoryResponse>> restoreCategory(
-            @PathVariable Integer id) {
-
-        var result = categoryService.restoreCategory(id);
-        return ResponseEntity.ok(
-                ApiResponse.success("Category restored successfully", result));
-    }
-
-    @GetMapping("/deleted")
-    public ResponseEntity<ApiResponse<PageResponse<CategoryResponse>>> getDeletedCategories(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir) {
-
-        var result = categoryService.getDeletedCategories(
-                page, size, sortBy, sortDir);
-        return ResponseEntity.ok(
-                ApiResponse.success("Deleted categories fetched successfully", result));
-    }
 }

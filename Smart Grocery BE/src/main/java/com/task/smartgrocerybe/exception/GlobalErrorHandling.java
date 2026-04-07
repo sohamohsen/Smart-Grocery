@@ -24,7 +24,7 @@ public class GlobalErrorHandling {
             ResourceNotFoundException ex) {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error(ex.getMessage()));
+                .body(ApiResponse.notFound(ex.getMessage()));
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
@@ -32,20 +32,20 @@ public class GlobalErrorHandling {
             ResourceAlreadyExistsException  ex) {
 
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiResponse.error(ex.getMessage()));
+                .body(ApiResponse.error(ex.getMessage(), HttpStatus.CONFLICT));
     }
 
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ApiResponse<?>> handleJwtException(JwtException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error("Invalid or expired token"));
+                .body(ApiResponse.unauthorized("Invalid or expired token"));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<?>> handleBadCredentials(
             BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error("Invalid username or password"));
+                .body(ApiResponse.unauthorized("Invalid username or password"));
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
@@ -53,19 +53,19 @@ public class GlobalErrorHandling {
             InvalidPasswordException ex) {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(ex.getMessage()));
+                .body(ApiResponse.badRequest(ex.getMessage()));
     }
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ApiResponse<?>> handleDisabledUser(DisabledException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error("Your account is disabled. Contact support."));
+                .body(ApiResponse.forbidden("Your account is disabled. Contact support."));
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiResponse<?>> handleBadRequest(BadRequestException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(ex.getMessage()));
+                .body(ApiResponse.badRequest(ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -73,7 +73,7 @@ public class GlobalErrorHandling {
             IllegalArgumentException ex) {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(ex.getMessage()));
+                .body(ApiResponse.badRequest(ex.getMessage()));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -81,7 +81,7 @@ public class GlobalErrorHandling {
             AccessDeniedException ex) {
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error("You don't have permission to access this resource"));
+                .body(ApiResponse.forbidden("You don't have permission to access this resource"));
     }
 
     @ExceptionHandler(ExcelExportException.class)
@@ -89,7 +89,7 @@ public class GlobalErrorHandling {
             ExcelExportException ex) {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("Failed to generate Excel file"));
+                .body(ApiResponse.internalServerError("Failed to generate Excel file"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -108,6 +108,7 @@ public class GlobalErrorHandling {
 
         return ResponseEntity.badRequest()
                 .body(ApiResponse.builder()
+                        .status(HttpStatus.BAD_REQUEST.value())
                         .success(false)
                         .message("Validation failed")
                         .data(errors)
@@ -120,7 +121,7 @@ public class GlobalErrorHandling {
     public ResponseEntity<ApiResponse<?>> handleAuthenticationException(
             AuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error("Authentication required. Please login."));
+                .body(ApiResponse.unauthorized("Authentication required. Please login."));
     }
 
     @ExceptionHandler(Exception.class)
@@ -129,7 +130,7 @@ public class GlobalErrorHandling {
         ex.printStackTrace();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(
+                .body(ApiResponse.internalServerError(
                         "An unexpected error occurred. Please try again later."
                 ));
     }

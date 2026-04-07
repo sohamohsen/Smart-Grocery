@@ -162,6 +162,7 @@ public class CategoryService {
                 .id(category.getId())
                 .name(category.getName())
                 .description(category.getDescription())
+                .createdAt(category.getCreatedAt())
                 .build();
     }
 
@@ -198,5 +199,9 @@ public class CategoryService {
 
     private boolean isValid(String value) {
         return value != null && !value.isBlank();
+    }
+
+    public CategoryResponse getDeletedCategoryById(Integer id) {
+        return null;
     }
 }

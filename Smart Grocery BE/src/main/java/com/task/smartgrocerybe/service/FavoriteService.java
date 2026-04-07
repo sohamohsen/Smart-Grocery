@@ -2,11 +2,14 @@ package com.task.smartgrocerybe.service;
 
 import com.task.smartgrocerybe.dto.FavoriteResponse;
 import com.task.smartgrocerybe.dto.ProductResponse;
+import com.task.smartgrocerybe.exception.BadRequestException;
 import com.task.smartgrocerybe.exception.ResourceNotFoundException;
 import com.task.smartgrocerybe.model.Favorite;
 import com.task.smartgrocerybe.model.Product;
+import com.task.smartgrocerybe.model.User;
 import com.task.smartgrocerybe.model.enums.Action;
 import com.task.smartgrocerybe.model.enums.EntityType;
+import com.task.smartgrocerybe.model.enums.Role;
 import com.task.smartgrocerybe.repository.FavoriteRepository;
 import com.task.smartgrocerybe.repository.ProductRepository;
 import com.task.smartgrocerybe.repository.UserRepository;
@@ -88,6 +91,20 @@ public class FavoriteService {
             int page, int size, String sortBy, String sortDir) {
 
         Integer userId = getCurrentUserId();
+        return getWishlistForUser(userId, page, size, sortBy, sortDir);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<FavoriteResponse> getWishlistForUser(
+            Integer userId, int page, int size, String sortBy, String sortDir) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with id: " + userId));
+
+        if (user.getRole() != Role.USER) {
+            throw new BadRequestException("Wishlist can only be viewed for user accounts");
+        }
 
         Sort sort = sortDir.equalsIgnoreCase("asc")
                 ? Sort.by(sortBy).ascending()

@@ -1,0 +1,37 @@
+<div class="flex flex-col h-full bg-secondary text-white w-64 shadow-xl">
+  <div class="flex items-center justify-center h-16 bg-gray-900 border-b border-gray-800">
+    <span class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-200">{{ panelTitle }}</span>
+  </div>
+  <div class="flex-1 overflow-y-auto pt-4 pb-4">
+    <nav class="mt-2 flex-1 px-3 space-y-1">
+      <a
+        *ngIf="isSuperAdmin"
+        routerLink="/super-admin/accounts"
+        routerLinkActive="bg-primary-600 text-white"
+        class="text-gray-300 hover:bg-gray-800 hover:text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all"
+      >
+        <span class="truncate">Accounts</span>
+      </a>
+
+      <ng-container *ngIf="canAccessAdminArea">
+        <a routerLink="/admin/dashboard" routerLinkActive="bg-primary-600 text-white" class="text-gray-300 hover:bg-gray-800 hover:text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all">
+          <span class="truncate">Dashboard</span>
+        </a>
+        <a routerLink="/admin/products" routerLinkActive="bg-primary-600 text-white" class="text-gray-300 hover:bg-gray-800 hover:text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all">
+          <span class="truncate">Products</span>
+        </a>
+        <a routerLink="/admin/categories" routerLinkActive="bg-primary-600 text-white" class="text-gray-300 hover:bg-gray-800 hover:text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all">
+          <span class="truncate">Categories</span>
+        </a>
+        <a routerLink="/admin/suggestions" routerLinkActive="bg-primary-600 text-white" class="text-gray-300 hover:bg-gray-800 hover:text-white group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all">
+          <span class="truncate">Suggestions</span>
+        </a>
+      </ng-container>
+    </nav>
+  </div>
+  <div class="flex-shrink-0 flex bg-gray-900 p-4 border-t border-gray-800">
+    <button (click)="logout()" class="flex-shrink-0 w-full group block text-center py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all">
+      Logout
+    </button>
+  </div>
+</div>

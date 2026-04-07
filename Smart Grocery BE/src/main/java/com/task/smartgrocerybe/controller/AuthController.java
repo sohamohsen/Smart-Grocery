@@ -3,6 +3,7 @@ package com.task.smartgrocerybe.controller;
 import com.task.smartgrocerybe.dto.AuthResponse;
 import com.task.smartgrocerybe.dto.LoginRequest;
 import com.task.smartgrocerybe.dto.RegisterRequest;
+import com.task.smartgrocerybe.model.enums.Role;
 import com.task.smartgrocerybe.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
             @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+        return ResponseEntity.ok(authService.register(request, Role.USER));
     }
 
     @PostMapping("/login")

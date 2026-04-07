@@ -24,7 +24,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         try {
 
             ApiResponse<?> apiResponse =
-                    ApiResponse.error("You don't have permission to access this resource");
+                    ApiResponse.forbidden("You don't have permission to access this resource");
 
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType("application/json");

@@ -16,8 +16,6 @@ import com.task.smartgrocerybe.repository.CategoryRepository;
 import com.task.smartgrocerybe.repository.ProductRepository;
 import com.task.smartgrocerybe.repository.ProductTagRepository;
 import com.task.smartgrocerybe.repository.TagRepository;
-import com.task.smartgrocerybe.service.AuditLogService;
-import com.task.smartgrocerybe.service.OpenFoodFactsService;
 import com.task.smartgrocerybe.util.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +57,8 @@ public class ProductService {
         OpenFoodFactsResponse response =
                 openFoodFactsService.fetchByBarcode(barcode);
 
-        return mapOpenFoodFactsToProductRequest(response, price, categoryId);
+        return mapOpenFoodFactsToProductRequest(
+                response, barcode, price, categoryId);
     }
 
     @Transactional
@@ -206,6 +205,23 @@ public class ProductService {
         return buildPageResponse(products);
     }
 
+    public ProductResponse getDeletedProductById(Integer id) {
+        Product product = productRepository.findByIdAndIsDeletedTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Deleted product not found with id: " + id));
+        return mapToResponse(product);
+    }
+
+    public PageResponse<ProductResponse> getDeletedProduct(int page, int size, String sortBy, String sortDir) {
+        Pageable pageable = buildPageable(page, size, sortBy, sortDir);
+
+        Page<Product> products = productRepository.findDeletedProducts(
+                pageable
+        );
+
+        return buildPageResponse(products);
+    }
+
     // ─── User + Admin ─────────────────────────────────────────────────────
 
     // user sees ONLY approved + not deleted — @SQLRestriction handles deleted
@@ -279,6 +295,7 @@ public class ProductService {
 
     private ProductRequest mapOpenFoodFactsToProductRequest(
             OpenFoodFactsResponse response,
+            String barcode,
             BigDecimal price,
             Integer categoryId) {
 
@@ -302,6 +319,7 @@ public class ProductService {
         return ProductRequest.builder()
                 .name(p.getProductName())
                 .brand(p.getBrands())
+                .barcode(barcode)
                 .imageUrl(p.getImageUrl())
                 .price(price)
                 .categoryId(categoryId)
@@ -385,4 +403,6 @@ public class ProductService {
     private boolean isValid(String value) {
         return value != null && !value.isBlank();
     }
+
+
 }

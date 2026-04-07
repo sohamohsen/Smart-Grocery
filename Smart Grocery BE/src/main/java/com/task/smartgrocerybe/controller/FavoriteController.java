@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/wishlist")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
-@PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+@PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
