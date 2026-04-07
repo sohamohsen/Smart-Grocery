@@ -46,12 +46,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // ✅ 401 — no token or invalid token
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) ->
                                 handlerExceptionResolver.resolveException(
                                         request, response, null, authException))
-                        // ✅ 403 — valid token but wrong role
                         .accessDeniedHandler((request, response, accessDeniedException) ->
                                 handlerExceptionResolver.resolveException(
                                         request, response, null, accessDeniedException))

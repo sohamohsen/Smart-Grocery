@@ -30,7 +30,6 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        // store role in token so Angular can read it
         claims.put("role", userDetails.getAuthorities()
                 .iterator().next().getAuthority());
         return buildToken(claims, userDetails);
