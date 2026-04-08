@@ -99,6 +99,7 @@ A few sample categories and one approved demo product are also seeded when the c
 7. Open **User → Products** to browse approved products, search, filter by category, paginate, and add items to the wishlist.
 8. Open **User → Wishlist** to review saved items.
 
+
 ---
 
 ## Feature 
