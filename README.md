@@ -125,6 +125,7 @@ A few sample categories and one approved demo product are also seeded when the c
 - The backend uses `spring.jpa.hibernate.ddl-auto=update` — schema changes are applied automatically on startup.
 - If `npm run build` fails because the existing `dist/` folder is locked by another process, use an alternate output path:
 
+
   ```bash
   npm run build -- --output-path build-check
   ```
