@@ -29,7 +29,7 @@ public class Product extends BaseEntity {
 
     private String brand;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private BigDecimal price;
 
     @Column(unique = true)

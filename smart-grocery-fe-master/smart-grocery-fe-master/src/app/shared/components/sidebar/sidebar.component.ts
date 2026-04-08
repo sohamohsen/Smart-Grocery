@@ -26,6 +26,10 @@ export class SidebarComponent {
     return this.isSuperAdmin ? 'Super Admin Panel' : 'Admin Panel';
   }
 
+  get userName(): string {
+    return this.authService.currentUser?.username || 'Guest';
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);

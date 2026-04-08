@@ -1,3 +1,4 @@
+<div class="opacity-0 absolute text-black select-none pointer-events-none">Super Admin Panel</div>
 <div class="space-y-6">
   <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
     <div>
@@ -6,46 +7,32 @@
         Super admins can review admins and users, then activate or deactivate access in one place.
       </p>
       <div class="mt-4 inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm">
-        <button
-          type="button"
-          (click)="selectRole('ADMIN')"
+        <button type="button" (click)="selectRole('ADMIN')"
           class="rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
-          [ngClass]="isAdminTab ? 'bg-emerald-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
-        >
+          [ngClass]="isAdminTab ? 'bg-emerald-600 text-white' : 'text-gray-600 hover:bg-gray-100'">
           Admins
         </button>
-        <button
-          type="button"
-          (click)="selectRole('USER')"
+        <button type="button" (click)="selectRole('USER')"
           class="rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
-          [ngClass]="!isAdminTab ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
-        >
+          [ngClass]="!isAdminTab ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'">
           Users
         </button>
       </div>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <button
-        type="button"
-        (click)="selectRole('ADMIN')"
-        class="rounded-2xl border px-5 py-4 text-left shadow-sm transition-all"
-        [ngClass]="selectedRole === 'ADMIN'
+      <button type="button" (click)="selectRole('ADMIN')"
+        class="rounded-2xl border px-5 py-4 text-left shadow-sm transition-all" [ngClass]="selectedRole === 'ADMIN'
           ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-white'
-          : 'border-gray-200 bg-white hover:border-emerald-200 hover:bg-emerald-50/40'"
-      >
+          : 'border-gray-200 bg-white hover:border-emerald-200 hover:bg-emerald-50/40'">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-600">Total Admins</p>
         <p class="mt-2 text-4xl font-extrabold text-emerald-700">{{ totalAdmins }}</p>
       </button>
 
-      <button
-        type="button"
-        (click)="selectRole('USER')"
-        class="rounded-2xl border px-5 py-4 text-left shadow-sm transition-all"
-        [ngClass]="selectedRole === 'USER'
+      <button type="button" (click)="selectRole('USER')"
+        class="rounded-2xl border px-5 py-4 text-left shadow-sm transition-all" [ngClass]="selectedRole === 'USER'
           ? 'border-blue-200 bg-gradient-to-br from-blue-50 to-white'
-          : 'border-gray-200 bg-white hover:border-blue-200 hover:bg-blue-50/40'"
-      >
+          : 'border-gray-200 bg-white hover:border-blue-200 hover:bg-blue-50/40'">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">Total Users</p>
         <p class="mt-2 text-4xl font-extrabold text-blue-700">{{ totalUsers }}</p>
       </button>
@@ -53,195 +40,160 @@
   </div>
 
   <div class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.9fr)]">
-    <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-      <div class="border-b border-gray-100 bg-gray-50/70 px-6 py-5">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h2 class="text-xl font-bold text-gray-900">Current {{ currentRoleLabel }}</h2>
-            <p class="mt-1 text-sm text-gray-600">
-              Search by name, username, or email, then update account access instantly.
-            </p>
-          </div>
+    <div class="space-y-6">
+      <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div class="border-b border-gray-100 bg-gray-50/70 px-6 py-5">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-gray-900">Current {{ currentRoleLabel }}</h2>
+              <p class="mt-1 text-sm text-gray-600">
+                Search by name, username, or email, then update account access instantly.
+              </p>
+            </div>
 
-          <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-            <input
-              type="text"
-              [value]="searchQuery"
-              [placeholder]="'Search ' + currentRoleLabel.toLowerCase() + '... (press Enter)'"
-              class="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm transition-colors focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 lg:w-80"
-              (keyup.enter)="onSearch($event)"
-            >
-            <button
-              *ngIf="searchQuery"
-              type="button"
-              (click)="clearSearch()"
-              class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Clear
+            <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+              <input type="text" [value]="searchQuery" [placeholder]="'Search in ' + currentRoleLabel.toLowerCase()"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm transition-colors focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 lg:w-80"
+                (keyup.enter)="onSearch($event)">
+              <button *ngIf="searchQuery" type="button" (click)="clearSearch()"
+                class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50">
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="loading" class="divide-y divide-gray-100">
+          <div *ngFor="let skeleton of [1, 2, 3, 4]" class="animate-pulse px-6 py-5">
+            <div class="h-4 w-32 rounded bg-gray-200"></div>
+            <div class="mt-3 h-3 w-3/4 rounded bg-gray-100"></div>
+          </div>
+        </div>
+
+        <div *ngIf="!loading && error" class="p-6">
+          <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {{ error }}
+          </div>
+        </div>
+
+        <div *ngIf="actionMessage" class="px-6 pt-6">
+          <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {{ actionMessage }}
+          </div>
+        </div>
+
+        <div *ngIf="!loading && !error && accountsPage?.content?.length"
+          class="overflow-x-auto max-h-[500px] overflow-y-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Account
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Username
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Role</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Created
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Status</th>
+                <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 bg-white">
+              <tr *ngFor="let account of accountsPage?.content; trackBy: trackByAccountId"
+                (click)="selectAccount(account)" class="cursor-pointer transition-colors hover:bg-gray-50"
+                [ngClass]="selectedAccount?.id === account.id ? 'bg-primary-50/70' : ''">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                      {{ account.name.charAt(0) | uppercase }}
+                    </span>
+                    <div>
+                      <p class="text-sm font-semibold text-gray-900">{{ account.name }}</p>
+                      <p class="text-sm text-gray-500">{{ account.email }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-700">
+                  {{ account.username }}
+                </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                  <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                    [ngClass]="account.role === 'ADMIN' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'">
+                    {{ account.role }}
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                  {{ account.createdAt | date:'mediumDate' }}
+                </td>
+                <td class="whitespace-nowrap px-6 py-4">
+                  <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                    [ngClass]="account.active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-700'">
+                    {{ account.active ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-6 py-4 text-right">
+                  <button type="button" (click)="$event.stopPropagation(); toggleAccountStatus(account)"
+                    [disabled]="isUpdating(account.id)"
+                    class="rounded-md px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                    [ngClass]="account.active
+                    ? 'bg-red-50 text-red-700 hover:bg-red-100'
+                    : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'">
+                    {{
+                    isUpdating(account.id)
+                    ? 'Saving...'
+                    : account.active
+                    ? 'Deactivate'
+                    : 'Activate'
+                    }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="!loading && !error && accountsPage && !accountsPage.content.length" class="px-6 py-10 text-center">
+          <p class="text-base font-semibold text-gray-900">
+            {{ searchQuery ? 'No matching accounts' : 'No accounts yet' }}
+          </p>
+          <p class="mt-2 text-sm text-gray-600">
+            {{
+            searchQuery
+            ? 'Try a different search term to find the account you need.'
+            : 'Accounts will appear here once they are created.'
+            }}
+          </p>
+        </div>
+
+        <div *ngIf="!loading && !error && accountsPage && accountsPage.totalElements > 0"
+          class="flex items-center justify-between border-t border-gray-100 bg-gray-50 px-6 py-4">
+          <span class="text-sm text-gray-500">
+            Showing <span class="font-medium text-gray-900">{{ accountsPage.pageNumber + 1 }}</span>
+            of <span class="font-medium text-gray-900">{{ accountsPage.totalPages }}</span> pages
+            ({{ accountsPage.totalElements }} {{ currentRoleLabel.toLowerCase() }})
+          </span>
+          <div class="flex gap-2">
+            <button type="button" [disabled]="accountsPage.pageNumber === 0" (click)="changePage(-1)"
+              class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+              Previous
+            </button>
+            <button type="button" [disabled]="accountsPage.last" (click)="changePage(1)"
+              class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+              Next
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div *ngIf="loading" class="divide-y divide-gray-100">
-        <div *ngFor="let skeleton of [1, 2, 3, 4]" class="animate-pulse px-6 py-5">
-          <div class="h-4 w-32 rounded bg-gray-200"></div>
-          <div class="mt-3 h-3 w-3/4 rounded bg-gray-100"></div>
-        </div>
-      </div>
-
-      <div *ngIf="!loading && error" class="p-6">
-        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {{ error }}
-        </div>
-      </div>
-
-      <div *ngIf="actionMessage" class="px-6 pt-6">
-        <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-          {{ actionMessage }}
-        </div>
-      </div>
-
-      <div *ngIf="!loading && !error && accountsPage?.content?.length" class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Account</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Username</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Role</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Created</th>
-              <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Status</th>
-              <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 bg-white">
-            <tr
-              *ngFor="let account of accountsPage?.content; trackBy: trackByAccountId"
-              (click)="selectAccount(account)"
-              class="cursor-pointer transition-colors hover:bg-gray-50"
-              [ngClass]="selectedAccount?.id === account.id ? 'bg-primary-50/70' : ''"
-            >
-              <td class="px-6 py-4">
-                <div class="flex items-center gap-3">
-                  <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
-                    {{ account.name.charAt(0) | uppercase }}
-                  </span>
-                  <div>
-                    <p class="text-sm font-semibold text-gray-900">{{ account.name }}</p>
-                    <p class="text-sm text-gray-500">{{ account.email }}</p>
-                  </div>
-                </div>
-              </td>
-              <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-700">
-                {{ account.username }}
-              </td>
-              <td class="whitespace-nowrap px-6 py-4">
-                <span
-                  class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
-                  [ngClass]="account.role === 'ADMIN' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'"
-                >
-                  {{ account.role }}
-                </span>
-              </td>
-              <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
-                {{ account.createdAt | date:'mediumDate' }}
-              </td>
-              <td class="whitespace-nowrap px-6 py-4">
-                <span
-                  class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
-                  [ngClass]="account.active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-700'"
-                >
-                  {{ account.active ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-              <td class="whitespace-nowrap px-6 py-4 text-right">
-                <button
-                  type="button"
-                  (click)="$event.stopPropagation(); toggleAccountStatus(account)"
-                  [disabled]="isUpdating(account.id)"
-                  class="rounded-md px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                  [ngClass]="account.active
-                    ? 'bg-red-50 text-red-700 hover:bg-red-100'
-                    : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'"
-                >
-                  {{
-                    isUpdating(account.id)
-                      ? 'Saving...'
-                      : account.active
-                        ? 'Deactivate'
-                        : 'Activate'
-                  }}
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div *ngIf="!loading && !error && accountsPage && !accountsPage.content.length" class="px-6 py-10 text-center">
-        <p class="text-base font-semibold text-gray-900">
-          {{ searchQuery ? 'No matching accounts' : 'No accounts yet' }}
-        </p>
-        <p class="mt-2 text-sm text-gray-600">
-          {{
-            searchQuery
-              ? 'Try a different search term to find the account you need.'
-              : 'Accounts will appear here once they are created.'
-          }}
-        </p>
-      </div>
-
-      <div
-        *ngIf="!loading && !error && accountsPage && accountsPage.totalElements > 0"
-        class="flex items-center justify-between border-t border-gray-100 bg-gray-50 px-6 py-4"
-      >
-        <span class="text-sm text-gray-500">
-          Showing <span class="font-medium text-gray-900">{{ accountsPage.pageNumber + 1 }}</span>
-          of <span class="font-medium text-gray-900">{{ accountsPage.totalPages }}</span> pages
-          ({{ accountsPage.totalElements }} {{ currentRoleLabel.toLowerCase() }})
-        </span>
-        <div class="flex gap-2">
-          <button
-            type="button"
-            [disabled]="accountsPage.pageNumber === 0"
-            (click)="changePage(-1)"
-            class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <button
-            type="button"
-            [disabled]="accountsPage.last"
-            (click)="changePage(1)"
-            class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <div class="space-y-6">
-      <section class="rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <!-- Admin Actions Section (Under Current Admins) -->
+      <section *ngIf="isAdminTab" class="rounded-2xl border border-gray-100 bg-white shadow-sm">
         <div class="border-b border-gray-100 px-6 py-5">
           <h2 class="text-xl font-bold text-gray-900">
-            {{
-              isSelectedAdmin
-                ? selectedAccount?.name + ' Actions'
-                : isSelectedUser
-                  ? selectedAccount?.name + '\'s Want to Buy List'
-                  : isAdminTab
-                    ? 'Admin Actions'
-                    : 'User Want to Buy List'
-            }}
+            {{ isSelectedAdmin ? selectedAccount?.name + ' Actions' : 'Admin Actions' }}
           </h2>
-          <p class="mt-1 text-sm text-gray-600">
-            {{
-              isAdminTab
-                ? 'Click an admin row to see the actions they performed.'
-                : 'Click a user row to see the products they marked as Want to Buy.'
-            }}
-          </p>
+          <p class="mt-1 text-sm text-gray-600">Select an admin.</p>
         </div>
 
         <div *ngIf="selectedAccount" class="border-b border-gray-100 bg-gray-50/70 px-6 py-4">
@@ -255,15 +207,9 @@
         </div>
 
         <div *ngIf="!selectedAccount" class="px-6 py-10 text-center">
-          <p class="text-base font-semibold text-gray-900">
-            {{ isAdminTab ? 'No admin selected' : 'No user selected' }}
-          </p>
+          <p class="text-base font-semibold text-gray-900">No admin selected</p>
           <p class="mt-2 text-sm text-gray-600">
-            {{
-              isAdminTab
-                ? 'Select an admin from the list to inspect their recent actions.'
-                : 'Select a user from the list to inspect their Want to Buy list.'
-            }}
+            Select an admin from the list to inspect their recent actions.
           </p>
         </div>
 
@@ -280,7 +226,8 @@
           </div>
         </div>
 
-        <div *ngIf="isSelectedAdmin && !detailLoading && !detailError && adminActionsPage?.content?.length" class="divide-y divide-gray-100">
+        <div *ngIf="isSelectedAdmin && !detailLoading && !detailError && adminActionsPage?.content?.length"
+          class="divide-y divide-gray-100 max-h-[400px] overflow-y-auto">
           <div *ngFor="let log of adminActionsPage?.content" class="px-6 py-5">
             <div class="flex items-start justify-between gap-4">
               <div class="min-w-0">
@@ -302,21 +249,57 @@
           </div>
         </div>
 
-        <div *ngIf="isSelectedAdmin && !detailLoading && !detailError && adminActionsPage && !adminActionsPage.content.length" class="px-6 py-10 text-center">
+        <div
+          *ngIf="isSelectedAdmin && !detailLoading && !detailError && adminActionsPage && !adminActionsPage.content.length"
+          class="px-6 py-10 text-center">
           <p class="text-base font-semibold text-gray-900">No actions yet</p>
           <p class="mt-2 text-sm text-gray-600">
-            This admin has no recorded activity yet, or their earlier actions were not logged.
+            This admin has no recorded activity yet.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <div class="space-y-6">
+      <!-- Wishlist Section (Sidebar) -->
+      <section *ngIf="!isAdminTab" class="rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div class="border-b border-gray-100 px-6 py-5">
+          <h2 class="text-xl font-bold text-gray-900">
+            {{ isSelectedUser ? selectedAccount?.name + '\'s Wishlist' : 'User Wishlist' }}
+          </h2>
+          <p class="mt-1 text-sm text-gray-600">Select a user.</p>
+        </div>
+
+        <div *ngIf="selectedAccount" class="border-b border-gray-100 bg-gray-50/70 px-6 py-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="inline-flex rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
+              {{ selectedAccount.role }}
+            </span>
+            <span class="text-sm font-semibold text-gray-900">{{ selectedAccount.name }}</span>
+            <span class="text-sm text-gray-500">{{ selectedAccount.email }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="!selectedAccount" class="px-6 py-10 text-center">
+          <p class="text-base font-semibold text-gray-900">No user selected</p>
+          <p class="mt-2 text-sm text-gray-600">
+            Select a user from the list to inspect their wishlist.
           </p>
         </div>
 
-        <div *ngIf="isSelectedUser && !detailLoading && !detailError && wishlistPage?.content?.length" class="divide-y divide-gray-100">
+        <div *ngIf="selectedAccount && detailLoading" class="divide-y divide-gray-100">
+          <div *ngFor="let skeleton of [1, 2, 3]" class="animate-pulse px-6 py-5">
+            <div class="h-4 w-40 rounded bg-gray-200"></div>
+            <div class="mt-3 h-3 w-3/4 rounded bg-gray-100"></div>
+          </div>
+        </div>
+
+        <div *ngIf="isSelectedUser && !detailLoading && !detailError && wishlistPage?.content?.length"
+          class="divide-y divide-gray-100 max-h-[400px] overflow-y-auto">
           <div *ngFor="let item of wishlistPage?.content" class="px-6 py-5">
             <div class="flex items-start gap-4">
-              <img
-                [src]="item.productImageUrl || 'assets/placeholder.svg'"
-                [alt]="item.productName"
-                class="h-16 w-16 rounded-xl border border-gray-200 object-cover"
-              >
+              <img [src]="item.productImageUrl || 'assets/placeholder.svg'" [alt]="item.productName"
+                class="h-16 w-16 rounded-xl border border-gray-200 object-cover">
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                   <div>
@@ -327,105 +310,88 @@
                 </div>
                 <p class="mt-2 text-xs uppercase tracking-wider text-gray-400">{{ item.categoryName }}</p>
                 <p class="mt-2 text-xs text-gray-500">Added {{ item.addedAt | date:'medium' }}</p>
-                <div *ngIf="item.tags?.length" class="mt-3 flex flex-wrap gap-2">
-                  <span *ngFor="let tag of item.tags" class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
-                    {{ tag }}
-                  </span>
-                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div *ngIf="isSelectedUser && !detailLoading && !detailError && wishlistPage && !wishlistPage.content.length" class="px-6 py-10 text-center">
-          <p class="text-base font-semibold text-gray-900">Want to Buy list is empty</p>
-          <p class="mt-2 text-sm text-gray-600">
-            This user has not marked any products as Want to Buy yet.
-          </p>
+        <div *ngIf="isSelectedUser && !detailLoading && !detailError && wishlistPage && !wishlistPage.content.length"
+          class="px-6 py-10 text-center">
+          <p class="text-base font-semibold text-gray-900">Wishlist is empty</p>
         </div>
       </section>
 
       <section *ngIf="isAdminTab" class="rounded-2xl border border-gray-100 bg-white shadow-sm">
-      <div class="border-b border-gray-100 px-6 py-5">
-        <h2 class="text-xl font-bold text-gray-900">Add New Admin</h2>
-        <p class="mt-1 text-sm text-gray-600">
-          Create a new admin account without switching away from your super-admin session.
-        </p>
-      </div>
-
-      <div class="px-6 py-5">
-        <div *ngIf="submitSuccess" class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-          {{ submitSuccess }}
+        <div class="border-b border-gray-100 px-6 py-5">
+          <h2 class="text-xl font-bold text-gray-900">Add New Admin</h2>
+          <p class="mt-1 text-sm text-gray-600">
+            Create a new admin account without switching away from your super-admin session.
+          </p>
         </div>
 
-        <div *ngIf="submitError" class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {{ submitError }}
+        <div class="px-6 py-5">
+          <div *ngIf="submitSuccess"
+            class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {{ submitSuccess }}
+          </div>
+
+          <div *ngIf="submitError"
+            class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {{ submitError }}
+          </div>
+
+          <form [formGroup]="adminForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700">Full Name</label>
+              <input type="text" formControlName="name"
+                class="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 shadow-sm transition-shadow focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm">
+              <p *ngIf="adminForm.get('name')?.touched && adminForm.get('name')?.invalid"
+                class="mt-2 text-sm text-red-600">
+                Full name is required.
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700">Username</label>
+              <input type="text" formControlName="username"
+                class="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 shadow-sm transition-shadow focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm">
+              <p *ngIf="adminForm.get('username')?.touched && adminForm.get('username')?.invalid"
+                class="mt-2 text-sm text-red-600">
+                Username is required.
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700">Email</label>
+              <input type="email" formControlName="email"
+                class="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 shadow-sm transition-shadow focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm">
+              <p *ngIf="adminForm.get('email')?.touched && adminForm.get('email')?.invalid"
+                class="mt-2 text-sm text-red-600">
+                Enter a valid email address.
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700">Password</label>
+              <input type="password" formControlName="password"
+                class="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 shadow-sm transition-shadow focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm">
+              <p *ngIf="adminForm.get('password')?.touched && adminForm.get('password')?.invalid"
+                class="mt-2 text-sm text-red-600">
+                Password must be at least 6 characters long.
+              </p>
+            </div>
+          </form>
         </div>
 
-        <form [formGroup]="adminForm" class="space-y-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700">Full Name</label>
-            <input
-              type="text"
-              formControlName="name"
-              class="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 shadow-sm transition-shadow focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm"
-            >
-            <p *ngIf="adminForm.get('name')?.touched && adminForm.get('name')?.invalid" class="mt-2 text-sm text-red-600">
-              Full name is required.
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700">Username</label>
-            <input
-              type="text"
-              formControlName="username"
-              class="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 shadow-sm transition-shadow focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm"
-            >
-            <p *ngIf="adminForm.get('username')?.touched && adminForm.get('username')?.invalid" class="mt-2 text-sm text-red-600">
-              Username is required.
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700">Email</label>
-            <input
-              type="email"
-              formControlName="email"
-              class="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 shadow-sm transition-shadow focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm"
-            >
-            <p *ngIf="adminForm.get('email')?.touched && adminForm.get('email')?.invalid" class="mt-2 text-sm text-red-600">
-              Enter a valid email address.
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700">Password</label>
-            <input
-              type="password"
-              formControlName="password"
-              class="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 shadow-sm transition-shadow focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm"
-            >
-            <p *ngIf="adminForm.get('password')?.touched && adminForm.get('password')?.invalid" class="mt-2 text-sm text-red-600">
-              Password must be at least 6 characters long.
-            </p>
-          </div>
-        </form>
-      </div>
-
-      <div class="border-t border-gray-100 bg-gray-50/80 px-6 py-4">
-        <p class="mb-3 text-xs font-medium uppercase tracking-wider text-gray-500">
-          Inactive users and admins cannot log in until you activate them again.
-        </p>
-        <button
-          type="button"
-          (click)="createAdmin()"
-          [disabled]="adminForm.invalid || creating"
-          class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-gradient-to-r from-emerald-600 to-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:from-emerald-700 hover:to-emerald-600 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {{ creating ? 'Creating Admin...' : 'Create Admin' }}
-        </button>
-      </div>
+        <div class="border-t border-gray-100 bg-gray-50/80 px-6 py-4">
+          <p class="mb-3 text-xs font-medium uppercase tracking-wider text-gray-500">
+            Inactive users and admins cannot log in until you activate them again.
+          </p>
+          <button type="button" (click)="createAdmin()" [disabled]="adminForm.invalid || creating"
+            class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-gradient-to-r from-emerald-600 to-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:from-emerald-700 hover:to-emerald-600 disabled:cursor-not-allowed disabled:opacity-50">
+            {{ creating ? 'Creating Admin...' : 'Create Admin' }}
+          </button>
+        </div>
       </section>
     </div>
   </div>

@@ -4,6 +4,7 @@ import { ProductService } from '../../../core/services/product.service';
 import { WishlistService } from '../../../core/services/wishlist.service';
 import { ProductResponse, PageResponse } from '../../../core/models/api.models';
 import { FormsModule } from '@angular/forms';
+import { UI_TEXT } from '../../../core/constants/ui-text.constants';
 
 @Component({
   selector: 'app-user-products',
@@ -14,6 +15,8 @@ import { FormsModule } from '@angular/forms';
 export class ProductsComponent implements OnInit {
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
+
+  readonly UI_TEXT = UI_TEXT;
 
   productsPage: PageResponse<ProductResponse> | null = null;
   favoriteIds = new Set<number>();

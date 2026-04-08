@@ -13,24 +13,30 @@ import { ProductRequest, CategoryResponse } from '../../../core/models/api.model
   styleUrls: ['./suggestions.component.scss']
 })
 export class SuggestionsComponent implements OnInit {
+
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
   private fb = inject(FormBuilder);
 
   searchForm: FormGroup;
   categories: CategoryResponse[] = [];
-  
+
   loading = false;
   suggestionResult: ProductRequest | null = null;
   bulkQueue: ProductRequest[] = [];
+
   error = '';
   success = '';
 
   constructor() {
     this.searchForm = this.fb.group({
-      barcode: ['', Validators.required],
-      price: ['', [Validators.required, Validators.min(0)]],
-      categoryId: ['', Validators.required]
+      barcode: [''],
+      name: ['', Validators.required],
+      brand: [''],
+      price: ['', [Validators.required, Validators.min(0.01)]],
+      categoryId: [null, Validators.required],
+      description: [''],
+      imageUrl: ['']
     });
   }
 
@@ -40,86 +46,178 @@ export class SuggestionsComponent implements OnInit {
     });
   }
 
-  onSearch() {
-    if (this.searchForm.invalid) return;
-    this.loading = true;
-    this.error = '';
-    this.success = '';
-    this.suggestionResult = null;
+  // =========================
+  // MESSAGE HANDLER
+  // =========================
+  private setMessage(type: 'error' | 'success', message: string) {
+    this.error = type === 'error' ? message : '';
+    this.success = type === 'success' ? message : '';
 
-    const { barcode, price, categoryId } = this.searchForm.value;
-
-    this.productService.fetchSuggestion(barcode, parseFloat(price), parseInt(categoryId, 10)).subscribe({
-      next: (res: any) => {
-        this.suggestionResult = res.data;
-        this.loading = false;
-      },
-      error: (err: any) => {
-        this.error = err.error?.message || 'Failed to fetch suggestion. Ensure barcode is valid.';
-        this.loading = false;
-      }
-    });
-  }
-
-  addToDb() {
-    if (!this.suggestionResult) return;
-    this.loading = true;
-    this.productService.addProduct(this.suggestionResult).subscribe({
-      next: () => {
-        this.success = 'Product successfully added to database!';
-        this.suggestionResult = null;
-        this.loading = false;
-        this.searchForm.reset();
-      },
-      error: (err: any) => {
-        this.error = err.error?.message || 'Failed to add product';
-        this.loading = false;
-      }
-    });
-  }
-
-  addToBulkQueue() {
-    if (!this.suggestionResult) return;
-
-    const alreadyQueued = this.bulkQueue.some((item) =>
-      item.barcode
-        ? item.barcode === this.suggestionResult?.barcode
-        : item.name === this.suggestionResult?.name && item.categoryId === this.suggestionResult?.categoryId
-    );
-
-    if (alreadyQueued) {
-      this.success = 'This suggestion is already queued for bulk add.';
+    setTimeout(() => {
       this.error = '';
+      this.success = '';
+    }, 3000);
+  }
+
+  // =========================
+  // FETCH PRODUCT
+  // =========================
+  onSearch() {
+    const { barcode } = this.searchForm.value;
+
+    if (!barcode || !barcode.trim()) {
+      this.setMessage('error', 'Please enter a barcode first.');
       return;
     }
 
-    this.bulkQueue = [...this.bulkQueue, { ...this.suggestionResult }];
-    this.success = 'Suggestion added to the bulk queue.';
-    this.error = '';
+    this.loading = true;
     this.suggestionResult = null;
+
+    const price = Number(this.searchForm.value.price) || 0;
+    const categoryId = Number(this.searchForm.value.categoryId) || 1;
+
+    this.productService.fetchSuggestion(barcode, price, categoryId).subscribe({
+      next: (res: any) => {
+        const result = res.data;
+        this.suggestionResult = result;
+
+        this.searchForm.patchValue({
+          name: result.name,
+          brand: result.brand,
+          description: result.description,
+          imageUrl: result.imageUrl
+        });
+
+        this.loading = false;
+      },
+      error: () => {
+        this.setMessage('error', 'Failed to fetch product.');
+        this.loading = false;
+      }
+    });
+  }
+
+  // =========================
+  // ADD TO DATABASE
+  // =========================
+  addToDb() {
+    if (this.searchForm.invalid) {
+      this.searchForm.markAllAsTouched();
+      this.setMessage('error', 'Please fill all required fields.');
+      return;
+    }
+
+    this.loading = true;
+
+    const formValue = this.searchForm.value;
+
+    const productData: ProductRequest = {
+      ...this.suggestionResult,
+      ...formValue,
+      categoryId: Number(formValue.categoryId),
+      price: Number(formValue.price)
+    };
+
+    this.productService.addProduct(productData).subscribe({
+      next: () => {
+        this.setMessage('success', 'Product added successfully ✅');
+        this.resetForm();
+        this.loading = false;
+      },
+      error: (err: any) => {
+        this.handleApiError(err);
+        this.loading = false;
+      }
+    });
+  }
+
+  // =========================
+  // ADD TO BULK QUEUE
+  // =========================
+  addToBulkQueue() {
+    if (this.searchForm.invalid) {
+      this.setMessage('error', 'Fill required fields before adding.');
+      return;
+    }
+
+    const formValue = this.searchForm.value;
+
+    const product: ProductRequest = {
+      ...this.suggestionResult,
+      ...formValue,
+      categoryId: Number(formValue.categoryId),
+      price: Number(formValue.price)
+    };
+
+    const exists = this.bulkQueue.some(item =>
+      item.barcode
+        ? item.barcode === product.barcode
+        : item.name === product.name && item.categoryId === product.categoryId
+    );
+
+    if (exists) {
+      this.setMessage('error', 'Product already exists in queue.');
+      return;
+    }
+
+    this.bulkQueue.push(product);
+    this.setMessage('success', 'Added to bulk queue 📦');
   }
 
   removeQueuedProduct(index: number) {
-    this.bulkQueue = this.bulkQueue.filter((_, itemIndex) => itemIndex !== index);
+    this.bulkQueue.splice(index, 1);
   }
 
   submitBulkQueue() {
-    if (!this.bulkQueue.length) return;
+    if (!this.bulkQueue.length) {
+      this.setMessage('error', 'Queue is empty.');
+      return;
+    }
 
     this.loading = true;
-    this.error = '';
-    this.success = '';
 
     this.productService.bulkAddProducts(this.bulkQueue).subscribe({
-      next: (res: any) => {
-        this.success = res.message || 'Queued products added successfully.';
+      next: () => {
+        this.setMessage('success', 'All products added successfully 🚀');
         this.bulkQueue = [];
         this.loading = false;
       },
       error: (err: any) => {
-        this.error = err.error?.message || 'Failed to bulk add queued products.';
+        this.handleApiError(err);
         this.loading = false;
       }
     });
+  }
+
+  // =========================
+  // ERROR HANDLING
+  // =========================
+  private handleApiError(err: any) {
+    const msg = err.error?.message || '';
+
+    if (msg.toLowerCase().includes('exist') || msg.toLowerCase().includes('duplicate')) {
+      this.setMessage('error', 'Product already exists ❗');
+    } else if (msg.toLowerCase().includes('validation')) {
+      this.setMessage('error', 'Invalid data. Please check inputs.');
+    } else {
+      this.setMessage('error', 'Something went wrong.');
+    }
+  }
+
+  // =========================
+  // RESET FORM
+  // =========================
+  private resetForm() {
+    this.searchForm.reset({
+      barcode: '',
+      name: '',
+      brand: '',
+      price: '',
+      categoryId: null,
+      description: '',
+      imageUrl: ''
+    });
+
+    this.suggestionResult = null;
   }
 }

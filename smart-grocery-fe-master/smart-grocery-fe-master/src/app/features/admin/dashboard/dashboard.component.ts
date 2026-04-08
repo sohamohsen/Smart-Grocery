@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { CategoryResponse } from '../../../core/models/api.models';
+import { UI_TEXT } from '../../../core/constants/ui-text.constants';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,8 @@ import { CategoryResponse } from '../../../core/models/api.models';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  readonly UI_TEXT = UI_TEXT;
+  
   totalProducts = 0;
   totalCategories = 0;
   categories: CategoryResponse[] = [];

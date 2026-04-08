@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CategoryRequest, CategoryResponse, PageResponse } from '../../../core/models/api.models';
+import { UI_TEXT } from '../../../core/constants/ui-text.constants';
 
 @Component({
   selector: 'app-category',
@@ -18,6 +19,8 @@ export class CategoryComponent implements OnInit {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
+
+  readonly UI_TEXT = UI_TEXT;
 
   categoriesPage: PageResponse<CategoryResponse> | null = null;
   loading = false;

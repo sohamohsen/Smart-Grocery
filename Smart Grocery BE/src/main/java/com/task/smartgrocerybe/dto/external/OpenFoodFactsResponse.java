@@ -29,6 +29,9 @@ public class OpenFoodFactsResponse {
         @JsonProperty("image_url")
         private String imageUrl;
 
+        @JsonProperty("generic_name")
+        private String genericName;
+
         @JsonProperty("categories_tags")
         private List<String> categoryTags;
 

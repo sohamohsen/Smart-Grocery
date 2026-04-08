@@ -24,13 +24,11 @@ public class AdminProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/fetch/{barcode}")
+    @GetMapping("/fetch")
     public ResponseEntity<ApiResponse<ProductRequest>> fetchSuggestion(
-            @PathVariable String barcode,
-            @RequestParam BigDecimal price,
-            @RequestParam Integer categoryId) {
+            @RequestParam(required = false) String barcode) {
 
-        var result = productService.fetchSuggestion(barcode, price, categoryId);
+        var result = productService.fetchSuggestion(barcode);
         return ResponseEntity.ok(
                 ApiResponse.success("Product fetched successfully", result));
     }

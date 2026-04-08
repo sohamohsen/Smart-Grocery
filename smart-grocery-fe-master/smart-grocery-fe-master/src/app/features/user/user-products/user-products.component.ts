@@ -4,6 +4,7 @@ import { ProductService } from '../../../core/services/product.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { WishlistService } from '../../../core/services/wishlist.service';
 import { ProductResponse, CategoryResponse, PageResponse } from '../../../core/models/api.models';
+import { UI_TEXT } from '../../../core/constants/ui-text.constants';
 
 @Component({
   selector: 'app-user-products',
@@ -16,6 +17,8 @@ export class UserProductsComponent implements OnInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
   private wishlistService = inject(WishlistService);
+
+  readonly UI_TEXT = UI_TEXT;
 
   productsPage: PageResponse<ProductResponse> | null = null;
   categories: CategoryResponse[] = [];

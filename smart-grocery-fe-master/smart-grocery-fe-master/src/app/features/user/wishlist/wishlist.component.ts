@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WishlistService } from '../../../core/services/wishlist.service';
 import { FavoriteResponse } from '../../../core/models/api.models';
+import { UI_TEXT } from '../../../core/constants/ui-text.constants';
 
 @Component({
   selector: 'app-wishlist',
@@ -12,6 +13,9 @@ import { FavoriteResponse } from '../../../core/models/api.models';
 })
 export class WishlistComponent implements OnInit {
   private wishlistService = inject(WishlistService);
+  
+  readonly UI_TEXT = UI_TEXT;
+  
   favorites: FavoriteResponse[] = [];
   loading = true;
 

@@ -59,7 +59,8 @@ export class ProductService {
   }
 
   fetchSuggestion(barcode: string, price: number, categoryId: number): Observable<ApiResponse<ProductRequest>> {
-    const params = new HttpParams().set('price', price).set('categoryId', categoryId);
-    return this.http.get<ApiResponse<ProductRequest>>(`${this.apiUrl}/admin/products/fetch/${barcode}`, { params });
+    let params = new HttpParams().set('price', price).set('categoryId', categoryId);
+    if (barcode) params = params.set('barcode', barcode);
+    return this.http.get<ApiResponse<ProductRequest>>(`${this.apiUrl}/admin/products/fetch`, { params });
   }
 }

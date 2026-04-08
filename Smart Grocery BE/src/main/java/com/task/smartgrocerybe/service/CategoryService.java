@@ -9,7 +9,6 @@ import com.task.smartgrocerybe.model.Category;
 import com.task.smartgrocerybe.model.enums.Action;
 import com.task.smartgrocerybe.model.enums.EntityType;
 import com.task.smartgrocerybe.repository.CategoryRepository;
-import com.task.smartgrocerybe.service.AuditLogService;
 import com.task.smartgrocerybe.util.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

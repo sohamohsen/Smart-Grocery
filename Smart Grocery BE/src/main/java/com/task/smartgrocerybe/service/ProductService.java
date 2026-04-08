@@ -48,17 +48,13 @@ public class ProductService {
     // ─── Admin only ───────────────────────────────────────────────────────
 
     public ProductRequest fetchSuggestion(
-            String barcode, BigDecimal price, Integer categoryId) {
-
-        if (!categoryRepository.existsById(categoryId)) {
-            throw new ResourceNotFoundException("Category not found");
-        }
+            String barcode) {
 
         OpenFoodFactsResponse response =
                 openFoodFactsService.fetchByBarcode(barcode);
 
         return mapOpenFoodFactsToProductRequest(
-                response, barcode, price, categoryId);
+                response, barcode);
     }
 
     @Transactional
@@ -295,9 +291,7 @@ public class ProductService {
 
     private ProductRequest mapOpenFoodFactsToProductRequest(
             OpenFoodFactsResponse response,
-            String barcode,
-            BigDecimal price,
-            Integer categoryId) {
+            String barcode) {
 
         var p = response.getProduct();
         List<String> tags = new ArrayList<>();
@@ -318,11 +312,10 @@ public class ProductService {
 
         return ProductRequest.builder()
                 .name(p.getProductName())
+                .description(p.getGenericName())
                 .brand(p.getBrands())
                 .barcode(barcode)
                 .imageUrl(p.getImageUrl())
-                .price(price)
-                .categoryId(categoryId)
                 .tags(tags)
                 .build();
     }
