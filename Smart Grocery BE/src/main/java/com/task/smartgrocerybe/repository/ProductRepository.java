@@ -25,7 +25,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     boolean existsByBarcode(String barcode);
 
-    // ✅ JPQL بدل native → مفيش مشاكل createdAt
     @Query("""
         SELECT p FROM Product p
         WHERE (:isApproved IS NULL OR p.isApproved = :isApproved)

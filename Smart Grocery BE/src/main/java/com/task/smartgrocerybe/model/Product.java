@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SQLRestriction("is_deleted = 0")
+//@SQLRestriction("is_deleted = 0")
 public class Product extends BaseEntity {
 
     @Id

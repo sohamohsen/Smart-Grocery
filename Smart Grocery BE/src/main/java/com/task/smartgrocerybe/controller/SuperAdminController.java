@@ -186,7 +186,7 @@ public class SuperAdminController {
                 ApiResponse.success("Product fetched successfully", result));
     }
 
-    @GetMapping("/all/deleted/category")
+    @GetMapping("/all/deleted/products")
     public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getDeletedProduct(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
