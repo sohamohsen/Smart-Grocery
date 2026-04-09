@@ -1,5 +1,6 @@
 package com.task.smartgrocerybe.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.task.smartgrocerybe.dto.AuditLogResponse;
 import com.task.smartgrocerybe.model.AuditLogs;
 import com.task.smartgrocerybe.model.enums.Action;
@@ -9,10 +10,7 @@ import com.task.smartgrocerybe.repository.AuditLogRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,9 @@ public class AuditLogService {
 
     private final AuditLogRepository auditLogRepository;
     private final HttpServletRequest httpServletRequest;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    // ─── Public log methods ───────────────────────────────────────────────
 
     public void log(Action action,
                     EntityType entityType,
@@ -37,8 +38,9 @@ public class AuditLogService {
     public void log(Action action,
                     EntityType entityType,
                     String description,
-                    String oldValue,
-                    String newValue) {
+                    Object oldValue,
+                    Object newValue) {
+
         try {
             Authentication auth = SecurityContextHolder
                     .getContext().getAuthentication();
@@ -48,8 +50,10 @@ public class AuditLogService {
                     : "system";
 
             Role role = parseRole(auth);
-
             String ipAddress = getClientIp();
+
+            String oldJson = toJson(oldValue);
+            String newJson = toJson(newValue);
 
             AuditLogs auditLog = AuditLogs.builder()
                     .performedBy(username)
@@ -57,8 +61,8 @@ public class AuditLogService {
                     .action(action)
                     .entityType(entityType)
                     .description(description)
-                    .oldValue(oldValue)
-                    .newValue(newValue)
+                    .oldValue(oldJson)
+                    .newValue(newJson)
                     .ipAddress(ipAddress)
                     .createAt(LocalDateTime.now())
                     .build();
@@ -66,16 +70,22 @@ public class AuditLogService {
             auditLogRepository.save(auditLog);
 
         } catch (Exception e) {
-            // never let audit logging break the main flow
-            log.error("Failed to save audit log: {}", e.getMessage());
+            // 🔥 مهم: audit log ميكسرش البزنس
+            log.error("Failed to save audit log", e);
         }
     }
 
-    public Page<AuditLogResponse> getLogsForUser(
-            String username, int page, int size, String sortBy, String sortDir) {
-        Pageable pageable = buildPageable(page, size, sortBy, sortDir);
-        return auditLogRepository.findByPerformedBy(username, pageable)
-                .map(this::mapToResponse);
+    // ─── Helpers ─────────────────────────────────────────────────────────
+
+    private String toJson(Object value) {
+        try {
+            return value != null
+                    ? objectMapper.writeValueAsString(value)
+                    : null;
+        } catch (Exception e) {
+            log.warn("Failed to convert value to JSON: {}", value);
+            return null;
+        }
     }
 
     private String getClientIp() {
@@ -92,23 +102,44 @@ public class AuditLogService {
         }
 
         try {
-            String authority = auth.getAuthorities().iterator().next().getAuthority();
+            String authority = auth.getAuthorities()
+                    .iterator()
+                    .next()
+                    .getAuthority();
+
             String normalized = authority.startsWith("ROLE_")
                     ? authority.substring(5)
                     : authority;
+
             return Role.valueOf(normalized.toUpperCase(Locale.ROOT));
+
         } catch (Exception ex) {
-            log.warn("Unable to parse role from authentication: {}", ex.getMessage());
+            log.warn("Unable to parse role: {}", ex.getMessage());
             return null;
         }
     }
 
     private Pageable buildPageable(
             int page, int size, String sortBy, String sortDir) {
+
         Sort sort = sortDir.equalsIgnoreCase("asc")
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
+
         return PageRequest.of(page, size, sort);
+    }
+
+    // ─── Queries ─────────────────────────────────────────────────────────
+
+    public Page<AuditLogResponse> getLogsForUser(
+            String username, int page, int size,
+            String sortBy, String sortDir) {
+
+        Pageable pageable = buildPageable(page, size, sortBy, sortDir);
+
+        return auditLogRepository
+                .findByPerformedBy(username, pageable)
+                .map(this::mapToResponse);
     }
 
     private AuditLogResponse mapToResponse(AuditLogs auditLog) {
