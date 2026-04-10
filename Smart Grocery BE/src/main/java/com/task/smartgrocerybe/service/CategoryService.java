@@ -9,6 +9,7 @@ import com.task.smartgrocerybe.model.Category;
 import com.task.smartgrocerybe.model.enums.Action;
 import com.task.smartgrocerybe.model.enums.EntityType;
 import com.task.smartgrocerybe.repository.CategoryRepository;
+import com.task.smartgrocerybe.util.ExcelUtil;
 import com.task.smartgrocerybe.util.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,8 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -144,6 +147,38 @@ public class CategoryService {
         auditLogService.log(
                 Action.DELETE, EntityType.CATEGORY,
                 "Soft deleted category: " + category.getName());
+    }
+
+    @Transactional
+    public void uploadCategoriesFromExcel(MultipartFile file) {
+
+        var rows = ExcelUtil.readExcel(file);
+
+        for (List<String> row : rows) {
+
+            String name = row.size() > 0 ? row.get(0) : null;
+            String description = row.size() > 1 ? row.get(1) : null;
+
+            if (!isValid(name)) continue;
+
+            if (categoryRepository.existsByName(name)) {
+                continue;
+            }
+
+            Category category = Category.builder()
+                    .name(name)
+                    .description(description)
+                    .isDeleted(false)
+                    .build();
+
+            categoryRepository.save(category);
+
+            auditLogService.log(
+                    Action.CREATE,
+                    EntityType.CATEGORY,
+                    "Added from Excel: " + name
+            );
+        }
     }
 
     // ─── Private helpers ──────────────────────────────────────────────────

@@ -36,6 +36,11 @@ export class CategoryComponent implements OnInit {
   editingCategoryId: number | null = null;
   submitError = '';
 
+  // 🔥 Excel Upload
+  selectedFile: File | null = null;
+  uploading = false;
+  uploadError = '';
+
   constructor() {
     this.categoryForm = this.fb.group({
       name: ['', Validators.required],
@@ -54,14 +59,14 @@ export class CategoryComponent implements OnInit {
     const request$ = this.showDeleted && this.isSuperAdmin
       ? this.categoryService.getDeletedCategories(this.currentPage, this.pageSize)
       : this.categoryService.getCategories(
-          this.currentPage,
-          this.pageSize,
-          this.searchQuery || undefined
-        );
+        this.currentPage,
+        this.pageSize,
+        this.searchQuery || undefined
+      );
 
     request$.subscribe({
       next: (res) => {
-        this.categoriesPage = res.data;
+        this.categoriesPage = res?.data ?? null;
         this.loading = false;
       },
       error: () => {
@@ -139,15 +144,62 @@ export class CategoryComponent implements OnInit {
         this.loadCategories();
       },
       error: (err) => {
-        this.submitError = err.error?.message || 'Failed to save category. Please try again.';
+        this.submitError = err.error?.message || 'Failed to save category.';
       }
     });
   }
 
-  openCategoryProducts(category: CategoryResponse) {
-    if (this.showDeleted) {
+  // 🔥 Excel Upload
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.uploadError = '';
+    }
+  }
+
+  uploadExcel() {
+    if (!this.selectedFile) {
+      this.uploadError = 'Please select a file first';
       return;
     }
+
+    this.uploading = true;
+
+    this.categoryService.uploadExcel(this.selectedFile).subscribe({
+      next: () => {
+        this.uploading = false;
+        this.selectedFile = null;
+        this.loadCategories();
+        alert('Excel uploaded successfully ✅');
+      },
+      error: (err) => {
+        this.uploading = false;
+        this.uploadError = err.error?.message || 'Upload failed';
+      }
+    });
+  }
+
+  // 🔥 CLEAN GETTERS (important)
+  get hasCategories(): boolean {
+    return (this.categoriesPage?.content?.length ?? 0) > 0;
+  }
+
+  get hasData(): boolean {
+    return (this.categoriesPage?.totalElements ?? 0) > 0;
+  }
+
+  get currentPageNumber(): number {
+    return (this.categoriesPage?.pageNumber ?? 0) + 1;
+  }
+
+  get totalPages(): number {
+    return this.categoriesPage?.totalPages ?? 0;
+  }
+
+  openCategoryProducts(category: CategoryResponse) {
+    if (this.showDeleted) return;
 
     this.router.navigate(['/admin/products'], {
       queryParams: {
@@ -162,15 +214,14 @@ export class CategoryComponent implements OnInit {
   }
 
   deleteCategory(id: number) {
-    if (confirm('Are you sure you want to delete this category?')) {
+    if (confirm('Delete this category?')) {
       this.categoryService.deleteCategory(id).subscribe(() => this.loadCategories());
     }
   }
 
   restoreCategory(id: number) {
-    if (confirm('Are you sure you want to restore this category?')) {
+    if (confirm('Restore this category?')) {
       this.categoryService.restoreCategory(id).subscribe(() => this.loadCategories());
     }
   }
-
 }

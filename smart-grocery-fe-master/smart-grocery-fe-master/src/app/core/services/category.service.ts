@@ -12,8 +12,14 @@ export class CategoryService {
   constructor(private http: HttpClient) { }
 
   getCategories(page: number, size: number, search?: string): Observable<ApiResponse<PageResponse<CategoryResponse>>> {
-    let params = new HttpParams().set('page', page).set('size', size).set('sortBy', 'createdAt').set('sortDir', 'desc');
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('sortBy', 'createdAt')
+      .set('sortDir', 'desc');
+
     if (search) params = params.set('search', search);
+
     return this.http.get<ApiResponse<PageResponse<CategoryResponse>>>(`${this.apiUrl}/categories`, { params });
   }
 
@@ -48,6 +54,17 @@ export class CategoryService {
     return this.http.patch<ApiResponse<CategoryResponse>>(
       `${this.apiUrl}/super-admin/restore/category/${id}`,
       {}
+    );
+  }
+
+  // 🔥🔥 NEW: Upload Excel
+  uploadExcel(file: File): Observable<ApiResponse<string>> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<ApiResponse<string>>(
+      `${this.apiUrl}/admin/categories/upload`,
+      formData
     );
   }
 }

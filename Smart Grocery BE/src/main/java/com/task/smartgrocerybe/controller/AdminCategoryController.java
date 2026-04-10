@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/admin/categories")
@@ -38,6 +39,17 @@ public class AdminCategoryController {
         var result = categoryService.updateCategory(id, request);
         return ResponseEntity.ok(
                 ApiResponse.success("Category updated successfully", result));
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<ApiResponse<String>> uploadExcel(
+            @RequestParam("file") MultipartFile file) {
+
+        categoryService.uploadCategoriesFromExcel(file);
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Excel uploaded and processed successfully", null)
+        );
     }
 
 }
